@@ -5,6 +5,10 @@
 
 #include "configs.h"
 
+#ifdef MARAUDER_M5CARDPUTER
+#include <M5Cardputer.h>
+#endif
+
 #ifdef HAS_SCREEN
 
 #define BATTERY_ANALOG_ON 0
@@ -174,6 +178,11 @@ class MenuFunctions
     void buttonNotSelected(uint8_t b, int8_t x = -1);
 
     uint8_t updateTouch(uint16_t *x, uint16_t *y, uint16_t threshold = 600);
+
+#ifdef MARAUDER_M5CARDPUTER
+    Keyboard_Class M5CardputerKeyboard = Keyboard_Class();
+    bool isKeyPressed(char c);
+#endif
 
   public:
     MenuFunctions();

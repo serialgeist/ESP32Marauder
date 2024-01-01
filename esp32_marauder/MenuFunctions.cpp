@@ -2,6 +2,10 @@
 #include "lang_var.h"
 //#include "icons.h"
 
+// #ifdef MARAUDER_M5CARDPUTER
+// #include <utility/Keyboard.h>
+// #endif
+
 #ifdef HAS_SCREEN
 
 extern const unsigned char menu_icons[][66];
@@ -476,21 +480,25 @@ MenuFunctions::MenuFunctions()
 void MenuFunctions::buttonNotSelected(uint8_t b, int8_t x) {
   if (x == -1)
     x = b;
+  #ifndef MARAUDER_M5CARDPUTER
   display_obj.tft.setFreeFont(NULL);
+  #endif
   display_obj.key[b].drawButton(false, current_menu->list->get(x).name);
 }
 
 void MenuFunctions::buttonSelected(uint8_t b, int8_t x) {
   if (x == -1)
     x = b;
+  #ifndef MARAUDER_M5CARDPUTER
   display_obj.tft.setFreeFont(NULL);
+  #endif
   display_obj.key[b].drawButton(true, current_menu->list->get(x).name);
 }
 
 // Function to check menu input
 void MenuFunctions::main(uint32_t currentTime)
 {
-  // Some function exited and we need to go back to normal
+    // Some function exited and we need to go back to normal
   if (display_obj.exit_draw) {
     wifi_scan_obj.currentScanMode = WIFI_SCAN_OFF;
     display_obj.exit_draw = false;
@@ -613,7 +621,7 @@ void MenuFunctions::main(uint32_t currentTime)
   #endif
 
   #ifdef HAS_BUTTONS
-
+  #if (C_BTN >= 0)
     bool c_btn_press = c_btn.justPressed();
     
     if ((c_btn_press) &&
@@ -676,7 +684,7 @@ void MenuFunctions::main(uint32_t currentTime)
   
       return;
     }
-
+  #endif
   #endif
 
 
@@ -744,8 +752,12 @@ void MenuFunctions::main(uint32_t currentTime)
 
   #ifdef HAS_BUTTONS
     #if !(defined(MARAUDER_V6) || defined(MARAUDER_V6_1))
-      #ifndef MARAUDER_M5STICKC
+      #if (U_BTN >= 0 || defined(MARAUDER_M5CARDPUTER))
+        #if (U_BTN >= 0)
         if (u_btn.justPressed()){
+        #elif defined(MARAUDER_M5CARDPUTER)
+        if (this->isKeyPressed(';')){
+        #endif
           if ((wifi_scan_obj.currentScanMode == WIFI_SCAN_OFF) ||
               (wifi_scan_obj.currentScanMode == OTA_UPDATE)) {
             if (current_menu->selected > 0) {
@@ -780,7 +792,13 @@ void MenuFunctions::main(uint32_t currentTime)
           }
         }
       #endif
+      
+      #if (D_BTN >= 0 || defined(MARAUDER_M5CARDPUTER))
+      #if (D_BTN >= 0)
       if (d_btn.justPressed()){
+      #elif defined(MARAUDER_M5CARDPUTER)
+      if (this->isKeyPressed('.')){
+      #endif
         if ((wifi_scan_obj.currentScanMode == WIFI_SCAN_OFF) ||
             (wifi_scan_obj.currentScanMode == OTA_UPDATE)) {
           if (current_menu->selected < current_menu->list->size() - 1) {
@@ -814,9 +832,13 @@ void MenuFunctions::main(uint32_t currentTime)
             wifi_scan_obj.changeChannel(14);
         }
       }
+      #endif
+      
+      #if (C_BTN >= 0)
       if(c_btn_press){
         current_menu->list->get(current_menu->selected).callable();
       }
+      #endif
     #endif
   #endif
 }
@@ -891,6 +913,7 @@ void MenuFunctions::battery2(bool initial)
 #else
 void MenuFunctions::battery(bool initial)
 {
+  #ifdef HAS_BATTERY
   uint16_t the_color;
   if (battery_obj.i2c_supported)
   {
@@ -914,6 +937,7 @@ void MenuFunctions::battery(bool initial)
       display_obj.tft.drawString((String)battery_obj.battery_level + "%", 204, 0, 2);
     }
   }
+  #endif
 }
 void MenuFunctions::battery2(bool initial)
 {
@@ -967,7 +991,7 @@ void MenuFunctions::updateStatusBar()
       display_obj.tft.drawString("CH: " + (String)wifi_scan_obj.set_channel, 50, 0, 2);
     #endif
 
-    #if defined(MARAUDER_MINI) || defined(MARAUDER_M5STICKC)
+    #if defined(MARAUDER_MINI) || defined(MARAUDER_M5STICKC) || defined(MARAUDER_M5CARDPUTER)
       display_obj.tft.drawString("CH: " + (String)wifi_scan_obj.set_channel, TFT_WIDTH/4, 0, 1);
     #endif
   }
@@ -981,7 +1005,7 @@ void MenuFunctions::updateStatusBar()
       display_obj.tft.drawString((String)wifi_scan_obj.free_ram + "B", 100, 0, 2);
     #endif
 
-    #if defined(MARAUDER_MINI) || defined(MARAUDER_M5STICKC)
+    #if defined(MARAUDER_MINI) || defined(MARAUDER_M5STICKC) || defined(MARAUDER_M5CARDPUTER)
       display_obj.tft.drawString((String)wifi_scan_obj.free_ram + "B", TFT_WIDTH/1.75, 0, 1);
     #endif
   }
@@ -1010,7 +1034,7 @@ void MenuFunctions::updateStatusBar()
                                 the_color);
   #endif
 
-  #if defined(MARAUDER_MINI) || defined(MARAUDER_M5STICKC)
+  #if defined(MARAUDER_MINI) || defined(MARAUDER_M5STICKC) || defined(MARAUDER_M5CARDPUTER)
     display_obj.tft.setTextColor(the_color, STATUSBAR_COLOR);
     display_obj.tft.drawString("SD", TFT_WIDTH - 12, 0, 1);
   #endif
@@ -1060,7 +1084,7 @@ void MenuFunctions::drawStatusBar()
     display_obj.tft.drawString("CH: " + (String)wifi_scan_obj.set_channel, 50, 0, 2);
   #endif
 
-  #if defined(MARAUDER_MINI) || defined(MARAUDER_M5STICKC)
+  #if defined(MARAUDER_MINI) || defined(MARAUDER_M5STICKC) || defined(MARAUDER_M5CARDPUTER)
     display_obj.tft.drawString("CH: " + (String)wifi_scan_obj.set_channel, TFT_WIDTH/4, 0, 1);
   #endif
 
@@ -1072,7 +1096,7 @@ void MenuFunctions::drawStatusBar()
     display_obj.tft.drawString((String)wifi_scan_obj.free_ram + "B", 100, 0, 2);
   #endif
 
-  #if defined(MARAUDER_MINI) || defined(MARAUDER_M5STICKC)
+  #if defined(MARAUDER_MINI) || defined(MARAUDER_M5STICKC) || defined(MARAUDER_M5CARDPUTER)
     display_obj.tft.drawString((String)wifi_scan_obj.free_ram + "B", TFT_WIDTH/1.75, 0, 1);
   #endif
 
@@ -1099,7 +1123,7 @@ void MenuFunctions::drawStatusBar()
                                 the_color);
   #endif
 
-  #if defined(MARAUDER_MINI) || defined(MARAUDER_M5STICKC)
+  #if defined(MARAUDER_MINI) || defined(MARAUDER_M5STICKC) || defined(MARAUDER_M5CARDPUTER)
     display_obj.tft.setTextColor(the_color, STATUSBAR_COLOR);
     display_obj.tft.drawString("SD", TFT_WIDTH - 12, 0, 1);
   #endif
@@ -1149,7 +1173,11 @@ void MenuFunctions::displaySetting(String key, Menu* menu, int index) {
   MenuNode node = menu->list->get(index);
 
   display_obj.tft.setTextWrap(false);
+  
+  #ifndef MARAUDER_M5CARDPUTER
   display_obj.tft.setFreeFont(NULL);
+  #endif
+
   display_obj.tft.setCursor(0, 100);
   display_obj.tft.setTextSize(1);
 
@@ -1190,6 +1218,10 @@ void MenuFunctions::RunSetup()
     if (gps_obj.getGpsModuleStatus()) {
       gpsInfoMenu.list = new LinkedList<MenuNode>();
     }
+  #endif
+
+  #ifdef MARAUDER_M5CARDPUTER
+  M5CardputerKeyboard.begin();
   #endif
 
   // Device menu stuff
@@ -1463,7 +1495,12 @@ void MenuFunctions::RunSetup()
       #ifdef HAS_BUTTONS
         #if !(defined(MARAUDER_V6) || defined(MARAUDER_V6_1))
           while(true) {
-            if (d_btn.justPressed()) {
+            #if (D_BTN >= 0 || defined(MARAUDER_M5CARDPUTER))
+            #if (D_BTN >= 0)
+            if (d_btn.justPressed()){
+            #elif defined(MARAUDER_M5CARDPUTER)
+            if (this->isKeyPressed('.')){
+            #endif
               if (evil_portal_obj.selected_html_index > 0)
                 evil_portal_obj.selected_html_index--;
               else
@@ -1474,8 +1511,14 @@ void MenuFunctions::RunSetup()
               this->buildButtons(&htmlMenu);
               this->displayCurrentMenu();
             }
-            #ifndef MARAUDER_M5STICKC
-              if (u_btn.justPressed()) {
+            #endif
+            
+            #if (U_BTN >= 0 || defined(MARAUDER_M5CARDPUTER))
+            #if (U_BTN >= 0)
+              if (u_btn.justPressed()){
+            #elif defined(MARAUDER_M5CARDPUTER)
+              if (this->isKeyPressed(';')){
+            #endif
                 if (evil_portal_obj.selected_html_index < evil_portal_obj.html_files->size() - 1)
                   evil_portal_obj.selected_html_index++;
                 else
@@ -1487,6 +1530,8 @@ void MenuFunctions::RunSetup()
                 this->displayCurrentMenu();
               }
             #endif
+
+            #if (C_BTN >= 0)
             if (c_btn.justPressed()) {
               if (evil_portal_obj.html_files->get(evil_portal_obj.selected_html_index) != "Back") {
                 evil_portal_obj.target_html_name = evil_portal_obj.html_files->get(evil_portal_obj.selected_html_index);
@@ -1496,6 +1541,7 @@ void MenuFunctions::RunSetup()
               this->changeMenu(htmlMenu.parentMenu);
               break;
             }
+            #endif
           }
         #endif
       #endif
@@ -1850,6 +1896,8 @@ void MenuFunctions::displayCurrentMenu(uint8_t start_index)
     #if defined(MARAUDER_MINI) || defined(MARAUDER_M5STICKC)
       display_obj.tft.setFreeFont(NULL);
       display_obj.tft.setTextSize(1);
+    #elif defined(MARAUDER_M5CARDPUTER)
+      display_obj.tft.setTextSize(1);
     #endif
     for (uint8_t i = start_index; i < current_menu->list->size(); i++)
     {
@@ -1870,15 +1918,32 @@ void MenuFunctions::displayCurrentMenu(uint8_t start_index)
 
       #endif
 
-      #if defined(MARAUDER_MINI) || defined(MARAUDER_M5STICKC)
+      #if defined(MARAUDER_MINI) || defined(MARAUDER_M5STICKC) || defined(MARAUDER_M5CARDPUTER)
         if ((current_menu->selected == i) || (current_menu->list->get(i).selected))
           display_obj.key[i - start_index].drawButton(true, current_menu->list->get(i).name);
         else 
           display_obj.key[i - start_index].drawButton(false, current_menu->list->get(i).name);
       #endif
     }
+    
+    #ifndef MARAUDER_M5CARDPUTER
     display_obj.tft.setFreeFont(NULL);
+    #endif
   }
 }
+
+#ifdef MARAUDER_M5CARDPUTER
+bool MenuFunctions::isKeyPressed(char c)
+{
+  M5CardputerKeyboard.updateKeyList();
+  M5CardputerKeyboard.updateKeysState();
+  bool pressed = M5CardputerKeyboard.isKeyPressed(c);
+
+  if (pressed)
+    delay(200);
+
+  return pressed;
+}
+#endif
 
 #endif

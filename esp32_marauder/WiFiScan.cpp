@@ -649,7 +649,7 @@ void WiFiScan::startWiFiAttacks(uint8_t scan_mode, uint16_t color, String title_
     xiao_led.attackLED();
   #elif defined(MARAUDER_M5STICKC)
     stickc_led.attackLED();
-  #else
+  #elif defined(HAS_NEOPIXEL_LED)
     led_obj.setMode(MODE_ATTACK);
   #endif
   initTime = millis();
@@ -674,7 +674,7 @@ bool WiFiScan::shutdownWiFi() {
       xiao_led.offLED();
     #elif defined(MARAUDER_M5STICKC)
       stickc_led.offLED();
-    #else
+    #elif defined(HAS_NEOPIXEL_LED)
       led_obj.setMode(MODE_OFF);
     #endif
   
@@ -701,7 +701,7 @@ bool WiFiScan::shutdownBLE() {
         xiao_led.offLED();
       #elif defined(MARAUDER_M5STICKC)
         stickc_led.offLED();
-      #else
+      #elif defined(HAS_NEOPIXEL_LED)
         led_obj.setMode(MODE_OFF);
       #endif
     
@@ -946,7 +946,7 @@ void WiFiScan::RunEvilPortal(uint8_t scan_mode, uint16_t color)
     xiao_led.sniffLED();
   #elif defined(MARAUDER_M5STICKC)
     stickc_led.sniffLED();
-  #else
+  #elif defined(HAS_NEOPIXEL_LED)
     led_obj.setMode(MODE_SNIFF);
   #endif
 
@@ -995,7 +995,7 @@ void WiFiScan::RunAPScan(uint8_t scan_mode, uint16_t color)
     xiao_led.sniffLED();
   #elif defined(MARAUDER_M5STICKC)
     stickc_led.sniffLED();
-  #else
+  #elif defined(HAS_NEOPIXEL_LED)
     led_obj.setMode(MODE_SNIFF);
   #endif
 
@@ -1369,7 +1369,7 @@ void WiFiScan::RunPacketMonitor(uint8_t scan_mode, uint16_t color)
     xiao_led.sniffLED();
   #elif defined(MARAUDER_M5STICKC)
     stickc_led.sniffLED();
-  #else
+  #elif defined(HAS_NEOPIXEL_LED)
     led_obj.setMode(MODE_SNIFF);
   #endif
 
@@ -1454,7 +1454,7 @@ void WiFiScan::RunEapolScan(uint8_t scan_mode, uint16_t color)
     xiao_led.sniffLED();
   #elif defined(MARAUDER_M5STICKC)
     stickc_led.sniffLED();
-  #else
+  #elif defined(HAS_NEOPIXEL_LED)
     led_obj.setMode(MODE_SNIFF);
   #endif
   
@@ -1611,7 +1611,7 @@ void WiFiScan::RunPwnScan(uint8_t scan_mode, uint16_t color)
     xiao_led.sniffLED();
   #elif defined(MARAUDER_M5STICKC)
     stickc_led.sniffLED();
-  #else
+  #elif defined(HAS_NEOPIXEL_LED)
     led_obj.setMode(MODE_SNIFF);
   #endif
 
@@ -1804,7 +1804,7 @@ void WiFiScan::RunBeaconScan(uint8_t scan_mode, uint16_t color)
     xiao_led.sniffLED();
   #elif defined(MARAUDER_M5STICKC)
     stickc_led.sniffLED();
-  #else
+  #elif defined(HAS_NEOPIXEL_LED)
     led_obj.setMode(MODE_SNIFF);
   #endif
   
@@ -1869,7 +1869,7 @@ void WiFiScan::RunStationScan(uint8_t scan_mode, uint16_t color)
     xiao_led.sniffLED();
   #elif defined(MARAUDER_M5STICKC)
     stickc_led.sniffLED();
-  #else
+  #elif defined(HAS_NEOPIXEL_LED)
     led_obj.setMode(MODE_SNIFF);
   #endif
   
@@ -1919,7 +1919,7 @@ void WiFiScan::RunRawScan(uint8_t scan_mode, uint16_t color)
     xiao_led.sniffLED();
   #elif defined(MARAUDER_M5STICKC)
     stickc_led.sniffLED();
-  #else
+  #elif defined(HAS_NEOPIXEL_LED)
     led_obj.setMode(MODE_SNIFF);
   #endif
   
@@ -1971,7 +1971,7 @@ void WiFiScan::RunDeauthScan(uint8_t scan_mode, uint16_t color)
     xiao_led.sniffLED();
   #elif defined(MARAUDER_M5STICKC)
     stickc_led.sniffLED();
-  #else
+  #elif defined(HAS_NEOPIXEL_LED)
     led_obj.setMode(MODE_SNIFF);
   #endif
   
@@ -2032,7 +2032,7 @@ void WiFiScan::RunProbeScan(uint8_t scan_mode, uint16_t color)
     xiao_led.sniffLED();
   #elif defined(MARAUDER_M5STICKC)
     stickc_led.sniffLED();
-  #else
+  #elif defined(HAS_NEOPIXEL_LED)
     led_obj.setMode(MODE_SNIFF);
   #endif
   
